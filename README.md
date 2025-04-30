@@ -42,18 +42,18 @@ This project includes the following services:
 
 ### 1. Start Minikube
 
+## 📁 Project Structure
 
-
-Project structure -->
-
+```
 cab-booking-system/
 │
-├── api-gateway/
-├── user-service/
-├── ride-service/
-├── payment-service/
-├── notification-service/
-├── docker-compose.yml
+├── api-gateway/             # Handles request routing and authentication
+├── user-service/            # Manages user registration, profiles, and authentication
+├── ride-service/            # Handles ride booking, tracking, and status updates
+├── payment-service/         # Manages payments and transactions
+├── notification-service/    # Sends ride confirmations, alerts, and updates
+├── docker-compose.yml       # Defines and runs multi-container Docker applications
+```
 
 
 ```bash
