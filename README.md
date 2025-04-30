@@ -42,5 +42,19 @@ This project includes the following services:
 
 ### 1. Start Minikube
 
+
+
+Project structure -->
+
+cab-booking-system/
+│
+├── api-gateway/
+├── user-service/
+├── ride-service/
+├── payment-service/
+├── notification-service/
+├── docker-compose.yml
+
+
 ```bash
 minikube start --no-vtx-check --addons=ingress
