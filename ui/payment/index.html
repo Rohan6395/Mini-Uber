@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Service</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Payment Service</h1>
+
+  <div class="card">
+    <h2>Make Payment</h2>
+    <input id="pUserId" placeholder="User ID" />
+    <input id="pRideId" placeholder="Ride ID" />
+    <input id="pAmount" placeholder="Amount" />
+    <button onclick="makePayment()">Pay</button>
+  </div>
+
+  <div class="card">
+    <h2>Payments</h2>
+    <button onclick="getPayments()">Refresh</button>
+    <pre id="output"></pre>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

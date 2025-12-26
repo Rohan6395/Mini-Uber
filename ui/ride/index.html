@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ride Service</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Ride Service</h1>
+
+  <div class="card">
+    <h2>Request Ride</h2>
+    <input id="rUserId" placeholder="User ID" />
+    <input id="rFrom" placeholder="From" />
+    <input id="rTo" placeholder="To" />
+    <button onclick="requestRide()">Request Ride</button>
+    <input id="rideId" placeholder="Ride ID" />
+
+    <button onclick="assignDriver()">Assign Driver</button>
+    <button onclick="startRide()">Start Ride</button>
+    <button onclick="completeRide()">Complete Ride</button>
+  </div>
+
+  <div class="card">
+    <h2>Available Rides</h2>
+    <button onclick="getRides()">Refresh</button>
+    <pre id="output"></pre>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

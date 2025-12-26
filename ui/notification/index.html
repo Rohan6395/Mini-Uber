@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Notification Service</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Notification Service</h1>
+
+  <div class="card">
+    <h2>Send Notification</h2>
+    <input id="nUserId" placeholder="User ID" />
+    <input id="nMessage" placeholder="Message" />
+    <button onclick="sendNotification()">Send</button>
+  </div>
+
+  <div class="card">
+    <h2>Notifications</h2>
+    <button onclick="getNotifications()">Refresh</button>
+    <pre id="output"></pre>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

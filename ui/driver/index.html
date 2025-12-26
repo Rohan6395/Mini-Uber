@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Service</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Driver Service</h1>
+
+  <div class="card">
+    <h2>Register Driver</h2>
+    <input id="dName" placeholder="Name" />
+    <input id="dVehicle" placeholder="Vehicle" />
+    <button onclick="registerDriver()">Register</button>
+  </div>
+
+  <div class="card">
+    <h2>Available Rides</h2>
+    <button onclick="getAvailableRides()">Refresh</button>
+    <pre id="output"></pre>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

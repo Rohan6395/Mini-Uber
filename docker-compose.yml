@@ -1,24 +1,19 @@
-version: '3.8'
-
 services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"   # RabbitMQ protocol
-      - "15672:15672" # Management UI
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      - "5672:5672"
+      - "15672:15672"
 
   user-service:
-    build: ./user-service
+    build: ./services/user-service
     container_name: user-service
     ports:
       - "5001:5001"
 
   ride-service:
-    build: ./ride-service
+    build: ./services/ride
     container_name: ride-service
     ports:
       - "5002:5002"
@@ -26,7 +21,7 @@ services:
       - rabbitmq
 
   payment-service:
-    build: ./payment-service
+    build: ./services/payment
     container_name: payment-service
     ports:
       - "5003:5003"
@@ -34,8 +29,10 @@ services:
       - rabbitmq
 
   notification-service:
-    build: ./notification-service
+    build: ./services/notification
     container_name: notification-service
+    ports:
+      - "5004:5004"
     depends_on:
       - rabbitmq
 
@@ -43,7 +40,9 @@ services:
     build: ./api-gateway
     container_name: api-gateway
     ports:
-      - "8080:80"
+      - "3000:80"
     depends_on:
+      - user-service
       - ride-service
       - payment-service
+      - notification-service
