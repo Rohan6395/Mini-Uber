@@ -4,6 +4,8 @@ const app = express();
 app.use(express.json());
 
 let channel, connection;
+let payments = []; // In-memory storage
+let paymentIdCounter = 1;
 
 async function connectRabbit(retries = 10, delay = 2000) {
   for (let i = 0; i < retries; i++) {
@@ -23,15 +25,42 @@ async function connectRabbit(retries = 10, delay = 2000) {
 
 connectRabbit();
 
+// Health check
+app.get('/', (req, res) => {
+  res.json({ message: 'Payment service is running', status: 'ok' });
+});
+
 app.post('/pay', async (req, res) => {
   const paymentInfo = req.body;
+  const payment = {
+    id: paymentIdCounter++,
+    userId: paymentInfo.userId,
+    rideId: paymentInfo.rideId,
+    amount: paymentInfo.amount,
+    status: 'success',
+    timestamp: new Date().toISOString()
+  };
+  
+  payments.push(payment);
+  
   // Send notification
-  await channel.sendToQueue('NOTIFICATIONS', Buffer.from(JSON.stringify({
-    type: 'PAYMENT_SUCCESS',
-    payload: paymentInfo,
-  })));
+  if (channel) {
+    await channel.sendToQueue('NOTIFICATIONS', Buffer.from(JSON.stringify({
+      type: 'PAYMENT_SUCCESS',
+      payload: {
+        userId: payment.userId,
+        rideId: payment.rideId,
+        message: `Payment of $${payment.amount.toFixed(2)} for Ride #${payment.rideId} was successful!`,
+        payment: payment
+      },
+    })));
+  }
 
-  res.send({ message: 'Payment successful!' });
+  res.json({ message: 'Payment successful!', payment });
+});
+
+app.get('/payments', (req, res) => {
+  res.json(payments);
 });
 
 app.listen(5003, () => {

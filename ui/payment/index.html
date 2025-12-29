@@ -1,25 +1,183 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Payment Service</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CabNet - Payment</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🚖</span>
+        <span class="logo-text">CabNet Payment</span>
+      </div>
+      <nav class="nav">
+        <a href="#" class="nav-link active">Payments</a>
+        <a href="#" class="nav-link">History</a>
+        <a href="#" class="nav-link">Settings</a>
+      </nav>
+    </header>
 
-  <h1>Payment Service</h1>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1 class="hero-title">Payment Center</h1>
+        <p class="hero-subtitle">Secure and fast payment processing</p>
+      </section>
 
-  <div class="card">
-    <h2>Make Payment</h2>
-    <input id="pUserId" placeholder="User ID" />
-    <input id="pRideId" placeholder="Ride ID" />
-    <input id="pAmount" placeholder="Amount" />
-    <button onclick="makePayment()">Pay</button>
-  </div>
+      <div class="content-grid">
+        <!-- Payment Card -->
+        <div class="payment-card">
+          <div class="card-header">
+            <h2><i class="fas fa-credit-card"></i> Make Payment</h2>
+            <p>Complete your ride payment</p>
+          </div>
+          
+          <form class="payment-form" onsubmit="event.preventDefault(); makePayment();">
+            <div class="form-group">
+              <label for="pUserId">
+                <i class="fas fa-user"></i> User ID
+              </label>
+              <input 
+                type="text" 
+                id="pUserId" 
+                placeholder="Enter user ID" 
+                required
+                class="form-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="pRideId">
+                <i class="fas fa-car"></i> Ride ID
+              </label>
+              <input 
+                type="text" 
+                id="pRideId" 
+                placeholder="Enter ride ID" 
+                required
+                class="form-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="pAmount">
+                <i class="fas fa-dollar-sign"></i> Amount
+              </label>
+              <div class="amount-input-wrapper">
+                <span class="currency">$</span>
+                <input 
+                  type="number" 
+                  id="pAmount" 
+                  placeholder="0.00" 
+                  step="0.01"
+                  min="0"
+                  required
+                  class="form-input amount-input"
+                />
+              </div>
+            </div>
+            
+            <div class="payment-methods">
+              <p class="payment-methods-label">Payment Method</p>
+              <div class="payment-options">
+                <label class="payment-option">
+                  <input type="radio" name="paymentMethod" value="card" checked>
+                  <i class="fas fa-credit-card"></i>
+                  <span>Credit Card</span>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="paymentMethod" value="paypal">
+                  <i class="fab fa-paypal"></i>
+                  <span>PayPal</span>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="paymentMethod" value="wallet">
+                  <i class="fas fa-wallet"></i>
+                  <span>Wallet</span>
+                </label>
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block btn-large">
+              <i class="fas fa-lock"></i>
+              <span>Pay Now</span>
+            </button>
+          </form>
+        </div>
 
-  <div class="card">
-    <h2>Payments</h2>
-    <button onclick="getPayments()">Refresh</button>
-    <pre id="output"></pre>
+        <!-- Payment History Card -->
+        <div class="history-card">
+          <div class="card-header">
+            <h2><i class="fas fa-history"></i> Payment History</h2>
+            <button onclick="getPayments()" class="btn btn-icon">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+          
+          <div id="paymentsList" class="payments-list">
+            <div class="empty-state">
+              <i class="fas fa-receipt"></i>
+              <p>No payments found</p>
+              <p class="empty-subtitle">Your payment history will appear here</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #dbeafe;">
+            <i class="fas fa-dollar-sign" style="color: #2563eb;"></i>
+          </div>
+          <div class="stat-content">
+            <h3 id="totalAmount">$0</h3>
+            <p>Total Paid</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #d1fae5;">
+            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+          </div>
+          <div class="stat-content">
+            <h3 id="successfulPayments">0</h3>
+            <p>Successful</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #fef3c7;">
+            <i class="fas fa-receipt" style="color: #f59e0b;"></i>
+          </div>
+          <div class="stat-content">
+            <h3 id="totalTransactions">0</h3>
+            <p>Transactions</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Response Section -->
+      <div class="response-card" id="responseCard" style="display: none;">
+        <div class="response-header">
+          <h3>Response</h3>
+          <button class="close-btn" onclick="closeResponse()">×</button>
+        </div>
+        <pre id="output" class="response-content"></pre>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2024 CabNet. All rights reserved.</p>
+    </footer>
   </div>
 
   <script src="script.js"></script>

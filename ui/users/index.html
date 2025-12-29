@@ -1,29 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>User Service</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CabNet - User Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🚖</span>
+        <span class="logo-text">CabNet</span>
+      </div>
+      <nav class="nav">
+        <a href="#" class="nav-link active">Home</a>
+        <a href="#" class="nav-link">Rides</a>
+        <a href="#" class="nav-link">Profile</a>
+      </nav>
+    </header>
 
-  <h1>User Service</h1>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1 class="hero-title">Welcome to CabNet</h1>
+        <p class="hero-subtitle">Your reliable ride-sharing platform</p>
+      </section>
 
-  <div class="card">
-    <h2>Register</h2>
-    <input id="regName" placeholder="Name" />
-    <input id="regEmail" placeholder="Email" />
-    <input id="regPassword" type="password" placeholder="Password" />
-    <button onclick="register()">Register</button>
+      <!-- Auth Cards -->
+      <div class="auth-container">
+        <!-- Register Card -->
+        <div class="auth-card">
+          <div class="card-header">
+            <h2>Create Account</h2>
+            <p>Join CabNet today</p>
+          </div>
+          <form class="auth-form" onsubmit="event.preventDefault(); register();">
+            <div class="form-group">
+              <label for="regName">Full Name</label>
+              <input 
+                type="text" 
+                id="regName" 
+                placeholder="John Doe" 
+                required
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label for="regEmail">Email Address</label>
+              <input 
+                type="email" 
+                id="regEmail" 
+                placeholder="john@example.com" 
+                required
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label for="regPassword">Password</label>
+              <input 
+                type="password" 
+                id="regPassword" 
+                placeholder="••••••••" 
+                required
+                class="form-input"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              <span>Register</span>
+              <span class="btn-icon">→</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Login Card -->
+        <div class="auth-card">
+          <div class="card-header">
+            <h2>Sign In</h2>
+            <p>Welcome back!</p>
+          </div>
+          <form class="auth-form" onsubmit="event.preventDefault(); login();">
+            <div class="form-group">
+              <label for="loginEmail">Email Address</label>
+              <input 
+                type="email" 
+                id="loginEmail" 
+                placeholder="john@example.com" 
+                required
+                class="form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input 
+                type="password" 
+                id="loginPassword" 
+                placeholder="••••••••" 
+                required
+                class="form-input"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              <span>Sign In</span>
+              <span class="btn-icon">→</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Response Section -->
+      <div class="response-card" id="responseCard" style="display: none;">
+        <div class="response-header">
+          <h3>Response</h3>
+          <button class="close-btn" onclick="closeResponse()">×</button>
+        </div>
+        <pre id="output" class="response-content"></pre>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2024 CabNet. All rights reserved.</p>
+    </footer>
   </div>
-
-  <div class="card">
-    <h2>Login</h2>
-    <input id="loginEmail" placeholder="Email" />
-    <input id="loginPassword" type="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-  </div>
-
-  <pre id="output"></pre>
 
   <script src="script.js"></script>
 </body>

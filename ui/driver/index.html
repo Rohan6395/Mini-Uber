@@ -1,24 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Driver Service</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CabNet - Driver Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🚖</span>
+        <span class="logo-text">CabNet Driver</span>
+      </div>
+      <nav class="nav">
+        <a href="#" class="nav-link active">Dashboard</a>
+        <a href="#" class="nav-link">Rides</a>
+        <a href="#" class="nav-link">Earnings</a>
+      </nav>
+    </header>
 
-  <h1>Driver Service</h1>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1 class="hero-title">Driver Dashboard</h1>
+        <p class="hero-subtitle">Manage your rides and earnings</p>
+      </section>
 
-  <div class="card">
-    <h2>Register Driver</h2>
-    <input id="dName" placeholder="Name" />
-    <input id="dVehicle" placeholder="Vehicle" />
-    <button onclick="registerDriver()">Register</button>
-  </div>
+      <div class="content-grid">
+        <!-- Register Driver Card -->
+        <div class="driver-card">
+          <div class="card-header">
+            <h2><i class="fas fa-user-plus"></i> Register as Driver</h2>
+            <p>Join our driver network</p>
+          </div>
+          
+          <form class="driver-form" onsubmit="event.preventDefault(); registerDriver();">
+            <div class="form-group">
+              <label for="dName">
+                <i class="fas fa-user"></i> Full Name
+              </label>
+              <input 
+                type="text" 
+                id="dName" 
+                placeholder="Enter your full name" 
+                required
+                class="form-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="dVehicle">
+                <i class="fas fa-car"></i> Vehicle Information
+              </label>
+              <input 
+                type="text" 
+                id="dVehicle" 
+                placeholder="e.g., Toyota Camry 2020" 
+                required
+                class="form-input"
+              />
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block btn-large">
+              <i class="fas fa-check-circle"></i>
+              <span>Register Driver</span>
+            </button>
+          </form>
+        </div>
 
-  <div class="card">
-    <h2>Available Rides</h2>
-    <button onclick="getAvailableRides()">Refresh</button>
-    <pre id="output"></pre>
+        <!-- Available Rides Card -->
+        <div class="rides-card">
+          <div class="card-header">
+            <h2><i class="fas fa-list-alt"></i> Available Rides</h2>
+            <button onclick="getAvailableRides()" class="btn btn-icon">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+          
+          <div id="ridesList" class="rides-list">
+            <div class="empty-state">
+              <i class="fas fa-car-side"></i>
+              <p>No rides available</p>
+              <p class="empty-subtitle">Available rides will appear here when users book rides</p>
+              <p class="empty-subtitle" style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.6;">
+                💡 Tip: Book a ride as a user first, then refresh here to see it
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #dbeafe;">
+            <i class="fas fa-car" style="color: #2563eb;"></i>
+          </div>
+          <div class="stat-content">
+            <h3 id="totalRides">0</h3>
+            <p>Total Rides</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #d1fae5;">
+            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+          </div>
+          <div class="stat-content">
+            <h3 id="completedRides">0</h3>
+            <p>Completed</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #fef3c7;">
+            <i class="fas fa-clock" style="color: #f59e0b;"></i>
+          </div>
+          <div class="stat-content">
+            <h3 id="pendingRides">0</h3>
+            <p>Pending</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #fce7f3;">
+            <i class="fas fa-dollar-sign" style="color: #ec4899;"></i>
+          </div>
+          <div class="stat-content">
+            <h3 id="totalEarnings">$0</h3>
+            <p>Total Earnings</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Response Section -->
+      <div class="response-card" id="responseCard" style="display: none;">
+        <div class="response-header">
+          <h3>Response</h3>
+          <button class="close-btn" onclick="closeResponse()">×</button>
+        </div>
+        <pre id="output" class="response-content"></pre>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2024 CabNet. All rights reserved.</p>
+    </footer>
   </div>
 
   <script src="script.js"></script>
