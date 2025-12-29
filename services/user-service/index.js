@@ -2,6 +2,11 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
+// ✅ ADD THIS
+app.get('/', (req, res) => {
+  res.send('User Service is running 🚀');
+});
+
 app.post('/login', (req, res) => {
   res.send({ message: 'User logged in successfully!' });
 });

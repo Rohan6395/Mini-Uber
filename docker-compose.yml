@@ -46,3 +46,55 @@ services:
       - ride-service
       - payment-service
       - notification-service
+
+  # ---------- UI SERVICES ----------
+
+  ui-users:
+    image: nginx:alpine
+    container_name: ui-users
+    volumes:
+      - ./ui/users:/usr/share/nginx/html
+    ports:
+      - "8081:80"
+    depends_on:
+      - api-gateway
+
+  ui-ride:
+    image: nginx:alpine
+    container_name: ui-ride
+    volumes:
+      - ./ui/ride:/usr/share/nginx/html
+    ports:
+      - "8082:80"
+    depends_on:
+      - api-gateway
+
+  ui-driver:
+    image: nginx:alpine
+    container_name: ui-driver
+    volumes:
+      - ./ui/driver:/usr/share/nginx/html
+    ports:
+      - "8083:80"
+    depends_on:
+      - api-gateway
+
+  ui-payment:
+    image: nginx:alpine
+    container_name: ui-payment
+    volumes:
+      - ./ui/payment:/usr/share/nginx/html
+    ports:
+      - "8084:80"
+    depends_on:
+      - api-gateway
+
+  ui-notification:
+    image: nginx:alpine
+    container_name: ui-notification
+    volumes:
+      - ./ui/notification:/usr/share/nginx/html
+    ports:
+      - "8085:80"
+    depends_on:
+      - api-gateway
