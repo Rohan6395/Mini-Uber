@@ -3,23 +3,43 @@ version: '3.8'
 services:
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    hostname: rabbitmq
     ports:
-      - "5672:5672"   # RabbitMQ protocol
-      - "15672:15672" # Management UI
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres:
+    image: postgres:15
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: appdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d appdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   user-service:
     build: ./user-service
-    container_name: user-service
     ports:
       - "5001:5001"
+    depends_on:
+      - rabbitmq
+      - postgres
 
   ride-service:
     build: ./ride-service
-    container_name: ride-service
     ports:
       - "5002:5002"
     depends_on:
@@ -27,7 +47,6 @@ services:
 
   payment-service:
     build: ./payment-service
-    container_name: payment-service
     ports:
       - "5003:5003"
     depends_on:
@@ -35,15 +54,13 @@ services:
 
   notification-service:
     build: ./notification-service
-    container_name: notification-service
     depends_on:
       - rabbitmq
 
   api-gateway:
     build: ./api-gateway
-    container_name: api-gateway
     ports:
       - "8080:80"
-    depends_on:
-      - ride-service
-      - payment-service
+
+volumes:
+  postgres_data:
