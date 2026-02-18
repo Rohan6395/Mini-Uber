@@ -1,0 +1,11 @@
+{
+  "name": "driver-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.22.1",
+    "ioredis": "^5.9.3",
+    "pg": "^8.18.0",
+    "ws": "^8.19.0"
+  }
+}

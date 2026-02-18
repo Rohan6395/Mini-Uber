@@ -1,60 +1,76 @@
-# 🚖 Cab Booking System - Microservices Architecture (Kubernetes + Minikube)
-
-This is a sample **Cab Booking System** built using a microservices architecture and deployed on **Kubernetes using Minikube**. Each service is containerized with Docker and managed through Kubernetes deployments, services, and ingress.
-
----
-
-## 🧩 Project Structure
-
-This project includes the following services:
-
-- **API Gateway** – Entry point that routes requests to appropriate services.
-- **User Service** – Handles user registration and login.
-- **Ride Service** – Manages ride creation, allocation, and tracking.
-- **Payment Service** – Handles payment processing.
-- **Notification Service** – Sends ride and payment notifications.
-- **RabbitMQ** – Message broker for inter-service communication.
-
----
-
-## 🚀 Technologies Used
-
-- Node.js / Express.js (per microservice)
-- MongoDB / In-memory data
-- RabbitMQ for messaging
-- Docker for containerization
-- Kubernetes for orchestration
-- Minikube for local Kubernetes cluster
-- Ingress Controller for routing
-
----
-
-## 🛠️ Prerequisites
-
-- [Docker](https://www.docker.com/)
-- [Minikube](https://minikube.sigs.k8s.io/docs/start/)
-- [kubectl](https://kubernetes.io/docs/tasks/tools/)
-- PowerShell (on Windows) or terminal (Mac/Linux)
-
----
-
-## ⚙️ Setup Instructions
-
-### 1. Start Minikube
-
-## 📁 Project Structure
-
-```
-cab-booking-system/
-│
-├── api-gateway/             # Handles request routing and authentication
-├── user-service/            # Manages user registration, profiles, and authentication
-├── ride-service/            # Handles ride booking, tracking, and status updates
-├── payment-service/         # Manages payments and transactions
-├── notification-service/    # Sends ride confirmations, alerts, and updates
-├── docker-compose.yml       # Defines and runs multi-container Docker applications
 ```
 
+---
 
-```bash
-minikube start --no-vtx-check --addons=ingress
+# Mini-Uber Real-Time Driver Matching
+
+## System Flow
+
+- **User** requests a ride via API Gateway.
+- **Ride Service** stores ride in Redis (TTL 30s) and publishes NEW_RIDE event.
+- **Driver Service** receives event, notifies drivers via WebSocket.
+- **Drivers** compete to accept. First to accept wins (atomic lock in Redis).
+- **Winner** is persisted to PostgreSQL. All drivers notified.
+- If no driver accepts in 30s, user is notified: NO_DRIVER_FOUND.
+
+## Architecture Diagram
+
+```
+sequenceDiagram
+    participant User
+    participant API as API Gateway
+    participant Ride as Ride Service
+    participant Driver as Driver Service
+    participant WS as WebSocket
+    participant Redis
+    participant PG as PostgreSQL
+
+    User->>API: POST /api/rides
+    API->>Ride: POST /book
+    Ride->>Redis: Store ride (TTL 30s)
+    Ride->>Redis: Publish NEW_RIDE
+    Redis->>Driver: Pub/Sub NEW_RIDE
+    Driver->>WS: Notify drivers (WebSocket)
+    Driver->>Driver: Driver sends ACCEPT_RIDE (WebSocket)
+    Driver->>Redis: SETNX ride:lock
+    alt First driver
+        Driver->>PG: Persist ride
+        Driver->>WS: Notify winner/others
+    else Already taken
+        Driver->>WS: Notify already taken
+    end
+    Redis->>Ride: TTL Expiry (no driver)
+    Ride->>User: NO_DRIVER_FOUND
+```
+
+## Quick Start
+
+1. **Build & Run All Services:**
+   ```sh
+   docker compose up --build
+   ```
+
+2. **Driver goes online (WebSocket):**
+   ```sh
+   npx wscat -c ws://localhost:7001
+   # Send:
+   {"type":"ONLINE","driverId":"d1","zone":"HSR_LAYOUT"}
+   ```
+
+3. **User requests a ride:**
+   ```sh
+   curl -X POST http://localhost:5002/book \
+     -H "Content-Type: application/json" \
+     -d '{"userId":"u1","pickup":"HSR","destination":"BTM","fare":200,"zone":"HSR_LAYOUT"}'
+   ```
+
+4. **Driver accepts ride (WebSocket):**
+   ```
+   {"type":"ACCEPT_RIDE","rideId":"<rideId>","driverId":"d1"}
+   ```
+   (Replace <rideId> with the actual rideId from the response)
+
+---
+
+- First driver to accept wins. Others get RIDE_ALREADY_TAKEN.
+- If no driver accepts in 30s, user gets NO_DRIVER_FOUND.
