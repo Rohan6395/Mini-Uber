@@ -1,6 +1,3 @@
-```
-
----
 ![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
 ![Microservices](https://img.shields.io/badge/Architecture-Microservices-green)
 ![Redis](https://img.shields.io/badge/Redis-Distributed%20Locking-red)
@@ -40,6 +37,8 @@ It reflects backend engineering patterns used in real-world ride-hailing systems
 - If no driver accepts in 30s, user is notified: NO_DRIVER_FOUND.
 
 ## Architecture Diagram
+
+![Architecture](docs/architecture.png)
 
 ```mermaid
 sequenceDiagram
@@ -96,7 +95,6 @@ sequenceDiagram
    ```
    (Replace <rideId> with the actual rideId from the response)
 
----
 
 - First driver to accept wins. Others get RIDE_ALREADY_TAKEN.
 - If no driver accepts in 30s, user gets NO_DRIVER_FOUND.
