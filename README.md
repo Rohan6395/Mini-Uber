@@ -1,8 +1,34 @@
 ```
 
 ---
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
+![Microservices](https://img.shields.io/badge/Architecture-Microservices-green)
+![Redis](https://img.shields.io/badge/Redis-Distributed%20Locking-red)
+
 
 # Mini-Uber Real-Time Driver Matching
+
+## Why This Project?
+
+This project focuses on solving real distributed system challenges:
+
+- Preventing multiple drivers from accepting the same ride
+- Handling high concurrency safely
+- Designing low-latency real-time communication
+- Using atomic operations for consistency
+- Gracefully handling driver timeouts
+
+It reflects backend engineering patterns used in real-world ride-hailing systems.
+
+
+## Tech Stack
+
+- **Node.js + Express** — Microservices
+- **Redis** — Pub/Sub, TTL, Distributed Locking
+- **WebSockets** — Real-time driver communication
+- **PostgreSQL** — Durable ride storage
+- **Docker** — Containerized deployment
+
 
 ## System Flow
 
@@ -15,7 +41,7 @@
 
 ## Architecture Diagram
 
-```
+```mermaid
 sequenceDiagram
     participant User
     participant API as API Gateway
@@ -74,3 +100,15 @@ sequenceDiagram
 
 - First driver to accept wins. Others get RIDE_ALREADY_TAKEN.
 - If no driver accepts in 30s, user gets NO_DRIVER_FOUND.
+
+
+
+
+## Future Improvements
+
+- Kafka for high-throughput event streaming  
+- Geo-based driver discovery  
+- Kubernetes deployment  
+- API Gateway rate limiting  
+- Observability (Prometheus + Grafana)  
+- Distributed tracing  
