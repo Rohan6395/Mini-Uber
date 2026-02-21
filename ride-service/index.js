@@ -97,7 +97,7 @@ app.post("/book", async (req, res) => {
     fare,
     status: "SEARCHING"
   });
-  await redis.expire(`ride:${rideId}`, 30); // 30 sec TTL
+  await redis.expire(`ride:${rideId}`, 300); // 30 sec TTL
   // Broadcast to drivers via Redis Pub/Sub
   await redis.publish("ride_requests", JSON.stringify({
     rideId,
