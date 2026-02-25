@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CabNet — Book a Ride</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🚖</span>
+        <span class="logo-text">CabNet — Ride Service</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="hero">
+        <h1 class="hero-title">Book a Ride</h1>
+        <p class="hero-subtitle">Ride Service • Port 8082 • Backend → :5002/book</p>
+      </section>
+
+      <div class="booking-card">
+        <div class="card-header">
+          <h2>🗺️ Request a Ride</h2>
+          <p>Select pickup → zone auto-selects → ride stored in Redis → broadcast to drivers via Pub/Sub</p>
+        </div>
+
+        <form class="booking-form" id="bookingForm">
+          <div class="form-group">
+            <label for="userId">User ID</label>
+            <input type="text" id="userId" placeholder="e.g. u1" required class="form-input" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pickup">Pickup Location</label>
+              <select id="pickup" required class="form-input form-select">
+                <option value="">Select pickup</option>
+                <option value="HSR">HSR Layout</option>
+                <option value="BTM">BTM Layout</option>
+                <option value="Koramangala">Koramangala</option>
+                <option value="Indiranagar">Indiranagar</option>
+                <option value="Whitefield">Whitefield</option>
+                <option value="Electronic City">Electronic City</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="destination">Destination</label>
+              <select id="destination" required class="form-input form-select">
+                <option value="">Select destination</option>
+                <option value="HSR">HSR Layout</option>
+                <option value="BTM">BTM Layout</option>
+                <option value="Koramangala">Koramangala</option>
+                <option value="Indiranagar">Indiranagar</option>
+                <option value="Whitefield">Whitefield</option>
+                <option value="Electronic City">Electronic City</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fare">Fare (₹)</label>
+              <input type="number" id="fare" placeholder="200" required class="form-input" min="1" />
+            </div>
+            <div class="form-group">
+              <label for="zone">Zone <span style="font-size:0.75rem; color: var(--accent-cyan); font-weight:400;">(auto
+                  from pickup)</span></label>
+              <input type="text" id="zone" class="form-input" readonly style="opacity:0.6; cursor:not-allowed;" />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="bookBtn">
+            <span>Search for Drivers</span>
+            <span class="btn-icon">→</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Ride Status -->
+      <div class="ride-status-section" id="rideStatusSection" style="display: none;">
+        <div class="status-card">
+          <h3>Ride Status</h3>
+          <div id="statusBadge" class="status-badge idle">No active ride</div>
+          <div id="rideIdDisplay" class="ride-id-display"></div>
+        </div>
+      </div>
+
+      <div class="response-card" id="responseCard" style="display: none;">
+        <div class="response-header">
+          <h3>API Response</h3>
+          <button class="close-btn" id="closeResponseBtn">&times;</button>
+        </div>
+        <pre id="output" class="response-content"></pre>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2025 CabNet — Microservices Ride Platform</p>
+    </footer>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="script.js"></script>
+</body>
+
+</html>

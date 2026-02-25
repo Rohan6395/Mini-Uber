@@ -5,7 +5,6 @@ const app = express();
 app.use(express.json());
 
 let connection, channel;
-const QUEUE = 'NOTIFICATIONS';
 
 async function connectRabbit() {
   while (true) {
@@ -13,7 +12,7 @@ async function connectRabbit() {
       connection = await amqp.connect('amqp://rabbitmq');
       channel = await connection.createChannel();
 
-      // Ensure standard event queues + DLQs exist (don't consume here)
+      // Ensure event queues exist
       const QUEUES = [
         'USER_EVENTS_QUEUE',
         'RIDE_EVENTS_QUEUE',
@@ -32,7 +31,6 @@ async function connectRabbit() {
         });
       }
 
-      await channel.assertQueue(QUEUE, { durable: true });
       console.log('✅ RabbitMQ connected (Payment Service)');
       break;
     } catch (err) {
@@ -49,7 +47,7 @@ app.post('/pay', async (req, res) => {
 
   if (!paymentId || !amount || !userId) {
     return res.status(400).json({
-      error: 'Invalid payment data'
+      error: 'Invalid payment data — need paymentId, amount, userId'
     });
   }
 
@@ -60,8 +58,6 @@ app.post('/pay', async (req, res) => {
       });
     }
 
-    // 🔹 Payment logic would go here (DB, gateway, etc.)
-
     const event = {
       type: 'PAYMENT_SUCCESS',
       payload: {
@@ -71,14 +67,20 @@ app.post('/pay', async (req, res) => {
       }
     };
 
+    // Send to PAYMENT_EVENTS_QUEUE (notification-service listens to this)
     channel.sendToQueue(
-      QUEUE,
+      'PAYMENT_EVENTS_QUEUE',
       Buffer.from(JSON.stringify(event)),
       { persistent: true }
     );
 
+    console.log(`💳 PAYMENT_SUCCESS event sent to PAYMENT_EVENTS_QUEUE for user ${userId}`);
+
     res.status(200).json({
-      message: 'Payment processed successfully'
+      message: 'Payment processed successfully',
+      paymentId,
+      amount,
+      userId
     });
 
   } catch (err) {

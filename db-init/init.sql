@@ -4,3 +4,14 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS rides (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    driver_id TEXT,
+    pickup TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    fare NUMERIC,
+    status TEXT DEFAULT 'SEARCHING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

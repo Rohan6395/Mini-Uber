@@ -30,8 +30,13 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
   user-service:
-    build: ./user-service
+    build: ./backend/user-service
     ports:
       - "5001:5001"
     depends_on:
@@ -39,43 +44,91 @@ services:
       - postgres
 
   ride-service:
-    build: ./ride-service
+    build: ./backend/ride-service
     ports:
       - "5002:5002"
     depends_on:
       - rabbitmq
       - redis
+      - postgres
 
   driver-service:
-    build: ./driver-service
+    build: ./backend/driver-service
     ports:
-        - "7001:7001"
+      - "7001:7001"
+      - "7002:7002"
     depends_on:
-        - rabbitmq
-        - redis
+      - rabbitmq
+      - redis
 
   payment-service:
-    build: ./payment-service
+    build: ./backend/payment-service
     ports:
       - "5003:5003"
     depends_on:
       - rabbitmq
 
   notification-service:
-    build: ./notification-service
+    build: ./backend/notification-service
     depends_on:
       - rabbitmq
 
   api-gateway:
-    build: ./api-gateway
+    build: ./backend/api-gateway
     ports:
       - "8080:80"
+    depends_on:
+      - user-service
+      - ride-service
+      - driver-service
+      - payment-service
 
-  redis:
-    image: redis:7
+  # ---------- UI SERVICES ----------
+
+  ui-users:
+    image: nginx:alpine
+    container_name: ui-users
+    volumes:
+      - ./ui/users:/usr/share/nginx/html
+      - ./ui/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - "6379:6379"
+      - "8081:80"
 
+  ui-ride:
+    image: nginx:alpine
+    container_name: ui-ride
+    volumes:
+      - ./ui/ride:/usr/share/nginx/html
+      - ./ui/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8082:80"
+
+  ui-driver:
+    image: nginx:alpine
+    container_name: ui-driver
+    volumes:
+      - ./ui/driver:/usr/share/nginx/html
+      - ./ui/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8083:80"
+
+  ui-payment:
+    image: nginx:alpine
+    container_name: ui-payment
+    volumes:
+      - ./ui/payment:/usr/share/nginx/html
+      - ./ui/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8084:80"
+
+  ui-notification:
+    image: nginx:alpine
+    container_name: ui-notification
+    volumes:
+      - ./ui/notification:/usr/share/nginx/html
+      - ./ui/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8085:80"
 
 volumes:
   postgres_data:

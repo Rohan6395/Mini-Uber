@@ -120,7 +120,7 @@ app.post('/login', async (req, res) => {
       type: 'USER_LOGGED_IN',
       payload: { userId: user.id }
     })),
-      { persistent: true }
+    { persistent: true }
   );
 
   res.json({ message: 'Login successful' });

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CabNet — Driver Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🚖</span>
+        <span class="logo-text">CabNet — Driver Service</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="hero">
+        <h1 class="hero-title">Driver Dashboard</h1>
+        <p class="hero-subtitle">Driver Service • Port 8083 • WebSocket → :7001</p>
+      </section>
+
+      <div class="content-grid">
+
+        <!-- Go Online Card -->
+        <div class="driver-card">
+          <div class="card-header">
+            <h2>🟢 Go Online</h2>
+          </div>
+          <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.95rem;">
+            Enter Driver ID and Zone → opens WebSocket → registers in Redis as online driver.
+          </p>
+
+          <form class="driver-form" id="goOnlineForm">
+            <div class="form-group">
+              <label for="driverId">Driver ID</label>
+              <input type="text" id="driverId" placeholder="e.g. d1" required class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label for="zone">Zone</label>
+              <select id="zone" required class="form-input form-select">
+                <option value="">Select zone</option>
+                <option value="HSR_LAYOUT">HSR Layout</option>
+                <option value="BTM_LAYOUT">BTM Layout</option>
+                <option value="KORAMANGALA">Koramangala</option>
+                <option value="INDIRANAGAR">Indiranagar</option>
+                <option value="WHITEFIELD">Whitefield</option>
+                <option value="ELECTRONIC_CITY">Electronic City</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="goOnlineBtn">
+              <span>Go Online</span>
+              <span class="btn-icon">→</span>
+            </button>
+          </form>
+
+          <!-- Online Drivers List -->
+          <div id="onlineDriversSection" style="margin-top: 24px;">
+            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 12px; color: var(--text-secondary);">
+              🟢 Online Drivers
+            </h3>
+            <div id="onlineDriversList">
+              <p style="color: var(--text-muted); font-size: 0.85rem;">No drivers online yet</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Ride Requests -->
+        <div class="rides-card">
+          <div class="card-header">
+            <h2>📡 Live Ride Requests</h2>
+          </div>
+
+          <div id="ridesList" class="rides-list">
+            <div class="empty-state">
+              <div class="empty-icon">🛣️</div>
+              <p>No ride requests yet</p>
+              <p style="font-size: 0.8rem; margin-top: 8px; opacity: 0.6;">
+                Go online first, then book a ride from port 8082 to see it here
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WebSocket Log -->
+      <div class="response-card" id="responseCard" style="display: none;">
+        <div class="response-header">
+          <h3>WebSocket Log</h3>
+          <button class="close-btn" id="closeResponseBtn">&times;</button>
+        </div>
+        <pre id="output" class="response-content"></pre>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2025 CabNet — Microservices Ride Platform</p>
+    </footer>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="script.js"></script>
+</body>
+
+</html>

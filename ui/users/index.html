@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CabNet — User Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🚖</span>
+        <span class="logo-text">CabNet — User Service</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="hero">
+        <h1 class="hero-title">User Service</h1>
+        <p class="hero-subtitle">Register & Login • Port 8081 • Backend → :5001</p>
+      </section>
+
+      <div class="auth-container">
+        <!-- Register -->
+        <div class="auth-card">
+          <div class="card-header">
+            <h2>Create Account</h2>
+            <p>Register a new user</p>
+          </div>
+          <form class="auth-form" id="registerForm">
+            <div class="form-group">
+              <label for="regEmail">Email</label>
+              <input type="email" id="regEmail" placeholder="john@example.com" required class="form-input" />
+            </div>
+            <div class="form-group">
+              <label for="regPassword">Password</label>
+              <input type="password" id="regPassword" placeholder="••••••••" required class="form-input" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="registerBtn">
+              <span>Register</span>
+              <span class="btn-icon">→</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Login -->
+        <div class="auth-card">
+          <div class="card-header">
+            <h2>Sign In</h2>
+            <p>Login with existing account</p>
+          </div>
+          <form class="auth-form" id="loginForm">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" placeholder="john@example.com" required class="form-input" />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" placeholder="••••••••" required class="form-input" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+              <span>Login</span>
+              <span class="btn-icon">→</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="response-card" id="responseCard" style="display: none;">
+        <div class="response-header">
+          <h3>API Response</h3>
+          <button class="close-btn" id="closeResponseBtn">&times;</button>
+        </div>
+        <pre id="output" class="response-content"></pre>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2025 CabNet — Microservices Ride Platform</p>
+    </footer>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="script.js"></script>
+</body>
+
+</html>

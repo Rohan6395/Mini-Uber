@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CabNet — Event Logs & Architecture</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🔔</span>
+        <span class="logo-text">CabNet — Notification Service</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="hero">
+        <h1 class="hero-title">Event Logs & Architecture</h1>
+        <p class="hero-subtitle">Notification Service • Port 8085 • Backend-only RabbitMQ consumer</p>
+      </section>
+
+      <!-- How it works -->
+      <div class="info-card">
+        <div class="card-header">
+          <h2>📡 How Notifications Work</h2>
+          <p>The Notification Service is a <strong>backend-only consumer</strong>. It listens to RabbitMQ queues
+            and processes events like user registrations, ride updates, and payment completions.
+            There is no HTTP API — all notifications are consumed from message queues.</p>
+        </div>
+
+        <div
+          style="padding: 16px 20px; background: rgba(244,63,94,0.06); border: 1px solid rgba(244,63,94,0.15); border-radius: 12px; color: var(--text-secondary); font-size: 0.9rem;">
+          <strong style="color: var(--accent-rose);">💡 To see notification logs:</strong>
+          Run <code
+            style="background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px; color: var(--accent-cyan);">docker compose logs -f notification-service</code>
+          in your terminal.
+        </div>
+      </div>
+
+      <!-- Queue Architecture -->
+      <div class="arch-section">
+        <div class="arch-card">
+          <div class="card-header">
+            <h2>📬 Message Queues</h2>
+            <p>Events flow through these RabbitMQ queues</p>
+          </div>
+
+          <ul class="queue-list">
+            <li class="queue-item">
+              <div class="queue-icon user">👤</div>
+              <div>
+                <div class="queue-name">USER_EVENTS_QUEUE</div>
+                <div class="queue-desc">USER_REGISTERED, USER_LOGGED_IN events from User Service</div>
+              </div>
+            </li>
+            <li class="queue-item">
+              <div class="queue-icon ride">🚗</div>
+              <div>
+                <div class="queue-name">RIDE_EVENTS_QUEUE</div>
+                <div class="queue-desc">Ride lifecycle events from Ride Service</div>
+              </div>
+            </li>
+            <li class="queue-item">
+              <div class="queue-icon payment">💰</div>
+              <div>
+                <div class="queue-name">PAYMENT_EVENTS_QUEUE</div>
+                <div class="queue-desc">PAYMENT_SUCCESS events from Payment Service</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- System Flow -->
+      <div class="flow-section">
+        <div class="flow-card">
+          <div class="card-header">
+            <h2>🔄 System Flow</h2>
+            <p>End-to-end ride booking flow</p>
+          </div>
+
+          <div class="flow-steps">
+            <div class="flow-step">
+              <div class="flow-step-number">1</div>
+              <div class="flow-step-content">
+                <div class="flow-step-title">User registers / logs in</div>
+                <div class="flow-step-desc">POST /api/users/register → User Service → event to USER_EVENTS_QUEUE</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-number">2</div>
+              <div class="flow-step-content">
+                <div class="flow-step-title">User books a ride</div>
+                <div class="flow-step-desc">POST /api/rides → Ride Service → stored in Redis → published to Redis
+                  Pub/Sub "ride_requests"</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-number">3</div>
+              <div class="flow-step-content">
+                <div class="flow-step-title">Drivers receive ride via WebSocket</div>
+                <div class="flow-step-desc">Driver Service subscribes to Redis Pub/Sub → broadcasts NEW_RIDE to online
+                  drivers in zone</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-number">4</div>
+              <div class="flow-step-content">
+                <div class="flow-step-title">Driver accepts the ride</div>
+                <div class="flow-step-desc">ACCEPT_RIDE via WebSocket → Redis SETNX atomic lock → first driver wins
+                </div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-number">5</div>
+              <div class="flow-step-content">
+                <div class="flow-step-title">Payment is processed</div>
+                <div class="flow-step-desc">POST /api/payments → Payment Service → PAYMENT_SUCCESS to NOTIFICATIONS
+                  queue</div>
+              </div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-step-number">6</div>
+              <div class="flow-step-content">
+                <div class="flow-step-title">Notification Service consumes events</div>
+                <div class="flow-step-desc">Logs events from all queues. Failed messages → DLQ (Dead Letter Queue)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2025 CabNet — Microservices Ride Platform</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
