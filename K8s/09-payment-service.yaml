@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: cab-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      containers:
+        - name: payment-service
+          image: brahman1101/cab-payment-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5003
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secrets
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5003
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+      initContainers:
+        - name: wait-for-rabbitmq
+          image: busybox:1.35
+          command: ['sh', '-c', "until nc -z rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: cab-system
+spec:
+  selector:
+    app: payment-service
+  ports:
+    - port: 5003
+      targetPort: 5003
+  type: ClusterIP

@@ -60,6 +60,13 @@ async function connectRabbit(retries = 10) {
 }
 
 // =====================
+// Health Check
+// =====================
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', service: 'user-service' });
+});
+
+// =====================
 // APIs
 // =====================
 

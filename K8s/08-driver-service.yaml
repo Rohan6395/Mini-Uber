@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driver-service
+  namespace: cab-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driver-service
+  template:
+    metadata:
+      labels:
+        app: driver-service
+    spec:
+      containers:
+        - name: driver-service
+          image: brahman1101/cab-driver-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 7001
+              name: http
+            - containerPort: 7002
+              name: ws
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secrets
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 7001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+      initContainers:
+        - name: wait-for-deps
+          image: busybox:1.35
+          command: ['sh', '-c', "until nc -z rabbitmq 5672 && nc -z redis 6379; do echo waiting for dependencies; sleep 2; done"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: driver-service
+  namespace: cab-system
+spec:
+  selector:
+    app: driver-service
+  ports:
+    - name: http
+      port: 7001
+      targetPort: 7001
+    - name: ws
+      port: 7002
+      targetPort: 7002
+  type: ClusterIP

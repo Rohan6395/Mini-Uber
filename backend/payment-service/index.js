@@ -42,6 +42,13 @@ async function connectRabbit() {
 
 connectRabbit();
 
+// =====================
+// Health Check
+// =====================
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', service: 'payment-service' });
+});
+
 app.post('/pay', async (req, res) => {
   const { paymentId, amount, userId } = req.body;
 

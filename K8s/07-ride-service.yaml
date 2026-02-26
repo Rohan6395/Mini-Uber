@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ride-service
+  namespace: cab-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ride-service
+  template:
+    metadata:
+      labels:
+        app: ride-service
+    spec:
+      containers:
+        - name: ride-service
+          image: brahman1101/cab-ride-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5002
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secrets
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5002
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+      initContainers:
+        - name: wait-for-deps
+          image: busybox:1.35
+          command: ['sh', '-c', "until nc -z rabbitmq 5672 && nc -z redis 6379 && nc -z postgres 5432; do echo waiting for dependencies; sleep 2; done"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ride-service
+  namespace: cab-system
+spec:
+  selector:
+    app: ride-service
+  ports:
+    - port: 5002
+      targetPort: 5002
+  type: ClusterIP

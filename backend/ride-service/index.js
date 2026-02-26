@@ -63,6 +63,13 @@ async function connectRabbit() {
 connectRabbit();
 
 // =====================
+// Health Check
+// =====================
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', service: 'ride-service' });
+});
+
+// =====================
 // Pickup → Zone mapping
 // =====================
 const PICKUP_TO_ZONE = {

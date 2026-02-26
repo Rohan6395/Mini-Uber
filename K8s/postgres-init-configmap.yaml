@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: cab-system
+data:
+  init.sql: |
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS rides (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        driver_id TEXT,
+        pickup TEXT NOT NULL,
+        destination TEXT NOT NULL,
+        fare NUMERIC,
+        status TEXT DEFAULT 'SEARCHING',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );

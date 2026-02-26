@@ -5,6 +5,13 @@ const WebSocket = require('ws');
 const app = express();
 app.use(express.json());
 
+// =====================
+// Health Check
+// =====================
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', service: 'driver-service' });
+});
+
 const redis = new Redis({ host: 'redis', port: 6379 });
 
 // =====================
