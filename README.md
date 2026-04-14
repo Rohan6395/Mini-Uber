@@ -23,7 +23,7 @@ It reflects backend engineering patterns used in real-world ride-hailing systems
 - **Node.js + Express** — Microservices
 - **Redis** — Pub/Sub, TTL, Distributed Locking
 - **WebSockets** — Real-time driver communication
-- **PostgreSQL** — Durable ride storage
+- **PostgreSQL** — Durable data storage
 - **Docker** — Containerized deployment
 
 
