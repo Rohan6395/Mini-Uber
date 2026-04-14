@@ -23,14 +23,14 @@ It reflects backend engineering patterns used in real-world ride-hailing systems
 - **Node.js + Express** — Microservices
 - **Redis** — Pub/Sub, TTL, Distributed Locking
 - **WebSockets** — Real-time driver communication
-- **PostgreSQL** — Durable ride storage
+- **PostgreSQL** — Durable data storage
 - **Docker** — Containerized deployment
 
 
 ## System Flow
 
 - **User** requests a ride via API Gateway.
-- **Ride Service** stores ride in Redis (TTL 30s) and publishes NEW_RIDE event.
+- **Ride Service** stores ride in Redis (TTL 30s, configurable) and publishes NEW_RIDE event.
 - **Driver Service** receives event, notifies drivers via WebSocket.
 - **Drivers** compete to accept. First to accept wins (atomic lock in Redis).
 - **Winner** is persisted to PostgreSQL. All drivers notified.
